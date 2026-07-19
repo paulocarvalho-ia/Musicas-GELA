@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Musica } from './types';
 
 const musicas: Musica[] = [
@@ -51,36 +51,59 @@ const musicas: Musica[] = [
   { id: 'ser-crianca', titulo: 'Ser Criança', autor: 'Allan Filho/Carlos Alexandre/Gustavo Novaes', lado: 'direito', categoria: 'agitada' },
   { id: 'sorriso-de-esperanca', titulo: 'Sorriso de Esperança', autor: 'Marielza Tiscate', lado: 'direito', categoria: 'agitada' },
   { id: 'te-encontrei', titulo: 'Te Encontrei', autor: 'Carol Badon/Gustavo Garcia/Rafael Concellos', lado: 'direito', categoria: 'agitada' },
-  { id: 'vento-e-luz', titulo: 'Vento e Luz / Vôo', autor: 'Joelson Queiroz / Maurício Soares e Oscar Weiss', lado: 'direito', categoria: 'agitada' },
+  { id: 'voo-vento-e-luz', titulo: 'Vôo / Vento e Luz', autor: 'Joelson Queiroz / Maurício Soares e Oscar Weiss', lado: 'direito', categoria: 'agitada' },
 ];
 
 function App() {
   const [musicaAtiva, setMusicaAtiva] = useState<Musica | null>(null);
   const [letra, setLetra] = useState<string>('');
-  const [fonteGrande, setFonteGrande] = useState(true);
+  const [fonteSize, setFonteSize] = useState(2.2);
+  const [historico, setHistorico] = useState<Musica[]>([]);
 
   useEffect(() => {
     if (musicaAtiva) {
       fetch(`/letras/${musicaAtiva.categoria === 'lenta' ? 'lentas' : 'agitadas'}/${musicaAtiva.id}.txt`)
-        .then(res => res.text())
+        .then(res => {
+          if (!res.ok) throw new Error('Erro');
+          return res.text();
+        })
         .then(texto => setLetra(texto))
         .catch(() => setLetra('Letra não encontrada.'));
     }
   }, [musicaAtiva]);
+
+  const abrirMusica = useCallback((musica: Musica) => {
+    setMusicaAtiva(musica);
+    setHistorico(prev => {
+      const novo = prev.filter(m => m.id !== musica.id);
+      return [...novo, musica].slice(-10);
+    });
+  }, []);
 
   const voltar = () => {
     setMusicaAtiva(null);
     setLetra('');
   };
 
+  const aumentarFonte = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setFonteSize(prev => Math.min(prev + 0.3, 4.0));
+  };
+
+  const diminuirFonte = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setFonteSize(prev => Math.max(prev - 0.3, 1.0));
+  };
+
   if (musicaAtiva) {
     return (
       <div className="tela-cheia" onClick={voltar}>
         <div className="letra-container">
-          <button className="btn-fonte" onClick={(e) => { e.stopPropagation(); setFonteGrande(!fonteGrande); }}>
-            {fonteGrande ? '🔍 A-' : '🔍 A+'}
-          </button>
-          <pre className={`letra-texto ${fonteGrande ? 'fonte-grande' : 'fonte-media'}`}>
+          <div className="botoes-fonte">
+            <button className="btn-fonte" onClick={aumentarFonte}>A+</button>
+            <button className="btn-fonte" onClick={diminuirFonte}>A-</button>
+          </div>
+          <pre className="letra-texto" style={{ fontSize: `${fonteSize}rem` }}>
             {letra}
           </pre>
         </div>
@@ -97,7 +120,7 @@ function App() {
       <div className="container">
         <header className="header">
           <h1>GELA</h1>
-          <p>Grupo Espírita Luz e Amor</p>
+          <p>Mocidade Ranulfo Xavier</p>
         </header>
 
         <div className="dois-lados">
@@ -105,7 +128,7 @@ function App() {
             <h2 className="titulo-lado">🎵 Músicas Lentas</h2>
             <div className="grade-botoes">
               {lentas.map(musica => (
-                <button key={musica.id} className="btn-musica btn-lenta" onClick={() => setMusicaAtiva(musica)}>
+                <button key={musica.id} className="btn-musica btn-lenta" onClick={() => abrirMusica(musica)}>
                   <span className="btn-titulo">{musica.titulo}</span>
                   <span className="btn-autor">{musica.autor}</span>
                 </button>
@@ -117,7 +140,7 @@ function App() {
             <h2 className="titulo-lado">🎶 Músicas Agitadas</h2>
             <div className="grade-botoes">
               {agitadas.map(musica => (
-                <button key={musica.id} className="btn-musica btn-agitada" onClick={() => setMusicaAtiva(musica)}>
+                <button key={musica.id} className="btn-musica btn-agitada" onClick={() => abrirMusica(musica)}>
                   <span className="btn-titulo">{musica.titulo}</span>
                   <span className="btn-autor">{musica.autor}</span>
                 </button>
@@ -125,6 +148,19 @@ function App() {
             </div>
           </div>
         </div>
+
+        {historico.length > 0 && (
+          <div className="historico">
+            <h3>Últimas acessadas:</h3>
+            <div className="historico-lista">
+              {historico.slice().reverse().map(m => (
+                <button key={m.id} className="btn-historico" onClick={() => abrirMusica(m)}>
+                  {m.titulo}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
