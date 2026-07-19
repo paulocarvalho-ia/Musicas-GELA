@@ -1,0 +1,240 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow-x: hidden;
+}
+
+/* PÁGINA INICIAL */
+.pagina-inicial {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f0e8 0%, #e8e0d5 50%, #dfd5c5 100%);
+  position: relative;
+}
+
+.pagina-inicial::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('/bg.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.08;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.container {
+  position: relative;
+  z-index: 1;
+  max-width: 100%;
+  padding: 10px 15px;
+}
+
+.header {
+  text-align: center;
+  padding: 12px 0 6px;
+}
+
+.header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #5a4a3a;
+  letter-spacing: 4px;
+}
+
+.header p {
+  font-size: 0.85rem;
+  color: #8a7a6a;
+}
+
+/* DOIS LADOS */
+.dois-lados {
+  display: flex;
+  gap: 12px;
+  height: calc(100vh - 90px);
+}
+
+.lado {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.titulo-lado {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #6b5d4e;
+  padding: 6px 0;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+/* GRADE DE BOTÕES */
+.grade-botoes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  flex: 1;
+  overflow-y: auto;
+  align-content: start;
+  padding: 4px;
+}
+
+/* BOTÕES */
+.btn-musica {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 8px 6px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 60px;
+  color: white;
+  font-family: inherit;
+}
+
+.btn-musica:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.btn-lenta {
+  background: linear-gradient(135deg, #8b9dc3, #6d7fa8);
+}
+
+.btn-lenta:hover {
+  background: linear-gradient(135deg, #9aacd4, #7d8fb8);
+}
+
+.btn-agitada {
+  background: linear-gradient(135deg, #e8a87c, #d4916a);
+}
+
+.btn-agitada:hover {
+  background: linear-gradient(135deg, #f0b890, #e0a07a);
+}
+
+.btn-titulo {
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.btn-autor {
+  font-size: 0.55rem;
+  opacity: 0.85;
+  margin-top: 2px;
+}
+
+/* TELA CHEIA */
+.tela-cheia {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 9999;
+}
+
+.tela-cheia::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('/bg.png');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.06;
+  pointer-events: none;
+}
+
+.letra-container {
+  position: relative;
+  z-index: 1;
+  width: 90%;
+  max-width: 1000px;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.letra-texto {
+  color: #ffffff;
+  text-align: center;
+  white-space: pre-wrap;
+  line-height: 1.6;
+  font-family: 'Georgia', 'Times New Roman', serif;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.fonte-grande {
+  font-size: 2.2rem;
+}
+
+.fonte-media {
+  font-size: 1.5rem;
+}
+
+.btn-fonte {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  z-index: 10000;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  padding: 8px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.btn-fonte:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.dica-voltar {
+  position: fixed;
+  bottom: 15px;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.8rem;
+  z-index: 1;
+}
+
+/* SCROLLBAR */
+.grade-botoes::-webkit-scrollbar,
+.letra-container::-webkit-scrollbar {
+  width: 4px;
+}
+
+.grade-botoes::-webkit-scrollbar-thumb,
+.letra-container::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+}
