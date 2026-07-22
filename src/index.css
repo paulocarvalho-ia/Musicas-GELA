@@ -310,46 +310,62 @@ body {
   pointer-events: none;
 }
 
+/* BARRA SUPERIOR (título + botões alinhados) */
+.barra-superior {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 16px;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(6px);
+}
+
+.moldura-titulo-topo {
+  text-align: center;
+}
+
+.titulo-exibicao-topo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 1.5px;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.autor-exibicao-topo {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 2px;
+  font-style: italic;
+}
+
+.botoes-fonte-topo {
+  position: absolute;
+  right: 16px;
+  display: flex;
+  gap: 8px;
+}
+
+/* CONTEÚDO DA LETRA */
 .letra-container {
   position: relative;
   z-index: 1;
-  width: 94%;
-  max-width: 1200px;
+  width: 96%;
+  max-width: 1300px;
   height: 90vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
-  padding-top: 80px;
+  justify-content: center;
   overflow: hidden;
+  padding-top: 70px;
 }
 
-/* MOLDURA DO TÍTULO */
-.moldura-titulo {
-  text-align: center;
-  margin-bottom: 14px;
-  padding: 14px 28px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.06);
-}
-
-.titulo-exibicao {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #ffffff;
-  letter-spacing: 2px;
-  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
-}
-
-.autor-exibicao {
-  font-size: 1rem;
-  color: rgba(255, 255, 255, 0.75);
-  margin-top: 6px;
-  font-style: italic;
-}
-
-/* TEXTO DA LETRA */
 .letra-texto {
   color: #ffffff;
   text-align: left;
@@ -359,36 +375,27 @@ body {
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
   max-height: 100%;
   overflow: hidden;
-  padding: 10px 20px;
+  padding: 8px 10px;
   width: 100%;
 }
 
-.letra-texto.coluna-1 {
+.coluna-1 {
   columns: 1;
 }
 
-.letra-texto.coluna-2 {
+.coluna-2 {
   columns: 2;
-  column-gap: 40px;
+  column-gap: 36px;
   column-rule: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.letra-texto.coluna-3 {
+.coluna-3 {
   columns: 3;
-  column-gap: 24px;
+  column-gap: 20px;
   column-rule: 1px solid rgba(255, 255, 255, 0.15);
 }
 
-/* BOTÕES DA TELA CHEIA */
-.botoes-fonte {
-  position: fixed;
-  top: 15px;
-  right: 15px;
-  z-index: 10000;
-  display: flex;
-  gap: 8px;
-}
-
+/* BOTÕES GENÉRICOS */
 .btn-fonte {
   background: rgba(255, 255, 255, 0.15);
   border: 1px solid rgba(255, 255, 255, 0.3);
