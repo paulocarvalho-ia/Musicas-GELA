@@ -62,7 +62,7 @@ function App() {
 
   useEffect(() => {
     if (musicaAtiva) {
-      fetch(`/letras/${musicaAtiva.categoria === 'lenta' ? 'lentas' : 'agitadas'}/${musicaAtiva.id}.txt`)
+      fetch(`/${musicaAtiva.categoria === 'lenta' ? 'lentas' : 'agitadas'}/${musicaAtiva.id}.txt`)
         .then(res => {
           if (!res.ok) throw new Error('Erro');
           return res.text();
