@@ -53,6 +53,7 @@ body {
   justify-content: flex-start;
   align-items: center;
   padding-top: 60px;
+  gap: 20px;
 }
 
 .header-inicio {
@@ -61,8 +62,6 @@ body {
   justify-content: space-between;
   width: 100%;
   max-width: 900px;
-  margin-bottom: 40px;
-  padding-top: 20px;
 }
 
 .logo {
@@ -92,6 +91,8 @@ body {
 .botoes-inicio {
   display: flex;
   gap: 30px;
+  margin-top: auto;
+  padding-bottom: 60px;
 }
 
 .btn-inicio {
@@ -99,10 +100,10 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 220px;
-  height: 180px;
+  width: 200px;
+  height: 120px;
   border: none;
-  border-radius: 20px;
+  border-radius: 16px;
   cursor: pointer;
   transition: all 0.3s ease;
   color: white;
@@ -123,14 +124,14 @@ body {
 }
 
 .btn-inicio-icone {
-  font-size: 3rem;
-  margin-bottom: 12px;
+  font-size: 2rem;
+  margin-bottom: 8px;
 }
 
 .btn-inicio-titulo {
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   font-weight: 700;
-  letter-spacing: 2px;
+  letter-spacing: 1px;
 }
 
 /* CABEÇALHO DAS LISTAS */
@@ -319,15 +320,15 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  padding-top: 40px;
+  padding-top: 80px;
   overflow: hidden;
 }
 
 /* MOLDURA DO TÍTULO */
 .moldura-titulo {
   text-align: center;
-  margin-bottom: 16px;
-  padding: 16px 32px;
+  margin-bottom: 14px;
+  padding: 14px 28px;
   border: 2px solid rgba(255, 255, 255, 0.3);
   border-radius: 16px;
   background: rgba(255, 255, 255, 0.06);
@@ -359,16 +360,26 @@ body {
   max-height: 100%;
   overflow: hidden;
   padding: 10px 20px;
-  columns: 2;
-  column-gap: 40px;
-  column-rule: 1px solid rgba(255, 255, 255, 0.2);
   width: 100%;
 }
 
-.letra-texto.coluna-unica {
+.letra-texto.coluna-1 {
   columns: 1;
 }
 
+.letra-texto.coluna-2 {
+  columns: 2;
+  column-gap: 40px;
+  column-rule: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.letra-texto.coluna-3 {
+  columns: 3;
+  column-gap: 24px;
+  column-rule: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* BOTÕES DA TELA CHEIA */
 .botoes-fonte {
   position: fixed;
   top: 15px;
@@ -396,6 +407,13 @@ body {
 
 .btn-fonte:hover {
   background: rgba(255, 255, 255, 0.3);
+}
+
+.btn-colunas {
+  width: auto;
+  padding: 0 12px;
+  border-radius: 22px;
+  font-size: 0.85rem;
 }
 
 .dica-voltar {
