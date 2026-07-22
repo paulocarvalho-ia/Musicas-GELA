@@ -54,7 +54,10 @@ const musicas: Musica[] = [
   { id: 'voo-vento-e-luz', titulo: 'Vôo / Vento e Luz', autor: 'Joelson Queiroz / Maurício Soares e Oscar Weiss', lado: 'direito', categoria: 'agitada' },
 ];
 
+type Tela = 'inicio' | 'lentas' | 'agitadas' | 'musica';
+
 function App() {
+  const [tela, setTela] = useState<Tela>('inicio');
   const [musicaAtiva, setMusicaAtiva] = useState<Musica | null>(null);
   const [letra, setLetra] = useState<string>('');
   const [fonteSize, setFonteSize] = useState(2.2);
@@ -74,13 +77,23 @@ function App() {
 
   const abrirMusica = useCallback((musica: Musica) => {
     setMusicaAtiva(musica);
+    setTela('musica');
     setHistorico(prev => {
       const novo = prev.filter(m => m.id !== musica.id);
       return [...novo, musica].slice(-10);
     });
   }, []);
 
-  const voltar = () => {
+  const voltarParaLista = () => {
+    if (musicaAtiva) {
+      setTela(musicaAtiva.categoria === 'lenta' ? 'lentas' : 'agitadas');
+      setMusicaAtiva(null);
+      setLetra('');
+    }
+  };
+
+  const irParaInicio = () => {
+    setTela('inicio');
     setMusicaAtiva(null);
     setLetra('');
   };
@@ -95,16 +108,32 @@ function App() {
     setFonteSize(prev => Math.max(prev - 0.3, 1.0));
   };
 
-  if (musicaAtiva) {
+  // Tela de exibição da letra
+  if (tela === 'musica' && musicaAtiva) {
+    const linhas = letra.split('\n');
+    const titulo = linhas[0] || '';
+    const autor = linhas[1] || '';
+    const corpo = linhas.slice(2).join('\n').trim();
+    const textoCurto = corpo.length < 400;
+
     return (
-      <div className="tela-cheia" onClick={voltar}>
+      <div className="tela-cheia" onClick={voltarParaLista}>
         <div className="letra-container">
           <div className="botoes-fonte">
             <button className="btn-fonte" onClick={aumentarFonte}>A+</button>
             <button className="btn-fonte" onClick={diminuirFonte}>A-</button>
           </div>
-          <pre className="letra-texto" style={{ fontSize: `${fonteSize}rem` }}>
-            {letra}
+
+          <div className="moldura-titulo">
+            <div className="titulo-exibicao">{titulo}</div>
+            {autor && <div className="autor-exibicao">{autor}</div>}
+          </div>
+
+          <pre
+            className={`letra-texto ${textoCurto ? 'coluna-unica' : ''}`}
+            style={{ fontSize: `${fonteSize}rem` }}
+          >
+            {corpo}
           </pre>
         </div>
         <p className="dica-voltar">Toque em qualquer lugar para voltar</p>
@@ -112,41 +141,59 @@ function App() {
     );
   }
 
-  const lentas = musicas.filter(m => m.categoria === 'lenta');
-  const agitadas = musicas.filter(m => m.categoria === 'agitada');
+  // Tela inicial com dois botões grandes
+  if (tela === 'inicio') {
+    return (
+      <div className="pagina-inicial">
+        <div className="container container-inicio">
+          <header className="header-inicio">
+            <img src="/logo-mocidade.png" alt="Mocidade Ranulfo Xavier" className="logo logo-esquerda" />
+            <div className="titulo-central">
+              <h1>GELA</h1>
+              <p>Mocidade Ranulfo Xavier</p>
+            </div>
+            <img src="/logo-gela.png" alt="GELA" className="logo logo-direita" />
+          </header>
+
+          <div className="botoes-inicio">
+            <button className="btn-inicio btn-lentas" onClick={() => setTela('lentas')}>
+              <span className="btn-inicio-icone">🎵</span>
+              <span className="btn-inicio-titulo">Músicas Lentas</span>
+            </button>
+            <button className="btn-inicio btn-agitadas" onClick={() => setTela('agitadas')}>
+              <span className="btn-inicio-icone">🎶</span>
+              <span className="btn-inicio-titulo">Músicas Agitadas</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Tela de lista de músicas (lentas ou agitadas)
+  const categoriaAtual = tela === 'lentas' ? 'lenta' : 'agitada';
+  const musicasFiltradas = musicas.filter(m => m.categoria === categoriaAtual);
 
   return (
     <div className="pagina-inicial">
       <div className="container">
         <header className="header">
+          <button className="btn-voltar" onClick={irParaInicio}>← Início</button>
           <h1>GELA</h1>
           <p>Mocidade Ranulfo Xavier</p>
         </header>
 
-        <div className="dois-lados">
-          <div className="lado esquerdo">
-            <h2 className="titulo-lado">🎵 Músicas Lentas</h2>
-            <div className="grade-botoes">
-              {lentas.map(musica => (
-                <button key={musica.id} className="btn-musica btn-lenta" onClick={() => abrirMusica(musica)}>
-                  <span className="btn-titulo">{musica.titulo}</span>
-                  <span className="btn-autor">{musica.autor}</span>
-                </button>
-              ))}
-            </div>
-          </div>
+        <h2 className="titulo-categoria">
+          {categoriaAtual === 'lenta' ? '🎵 Músicas Lentas' : '🎶 Músicas Agitadas'}
+        </h2>
 
-          <div className="lado direito">
-            <h2 className="titulo-lado">🎶 Músicas Agitadas</h2>
-            <div className="grade-botoes">
-              {agitadas.map(musica => (
-                <button key={musica.id} className="btn-musica btn-agitada" onClick={() => abrirMusica(musica)}>
-                  <span className="btn-titulo">{musica.titulo}</span>
-                  <span className="btn-autor">{musica.autor}</span>
-                </button>
-              ))}
-            </div>
-          </div>
+        <div className="grade-botoes grade-unica">
+          {musicasFiltradas.map(musica => (
+            <button key={musica.id} className={`btn-musica ${musica.categoria === 'lenta' ? 'btn-lenta' : 'btn-agitada'}`} onClick={() => abrirMusica(musica)}>
+              <span className="btn-titulo">{musica.titulo}</span>
+              <span className="btn-autor">{musica.autor}</span>
+            </button>
+          ))}
         </div>
 
         {historico.length > 0 && (
