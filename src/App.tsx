@@ -1,6 +1,33 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Musica } from './types';
 
+// Chave para salvar preferências no navegador
+const PREFS_KEY = 'gela-musica-prefs';
+
+interface MusicaPrefs {
+  fontSize: number;
+  numColunas: number;
+}
+
+// Carrega preferências salvas
+function carregarPrefs(): Record<string, MusicaPrefs> {
+  try {
+    const raw = localStorage.getItem(PREFS_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch {
+    return {};
+  }
+}
+
+// Salva preferências
+function salvarPrefs(prefs: Record<string, MusicaPrefs>) {
+  try {
+    localStorage.setItem(PREFS_KEY, JSON.stringify(prefs));
+  } catch {
+    // ignora erro de localStorage cheio
+  }
+}
+
 const musicas: Musica[] = [
   // LADO ESQUERDO - LENTAS
   { id: 'alem-do-veu', titulo: 'Além do Véu', autor: 'Carol Badon e Rafael Concellos', lado: 'esquerdo', categoria: 'lenta' },
@@ -63,7 +90,9 @@ function App() {
   const [fonteSize, setFonteSize] = useState(2.2);
   const [numColunas, setNumColunas] = useState(2);
   const [historico, setHistorico] = useState<Musica[]>([]);
+  const [prefs, setPrefs] = useState<Record<string, MusicaPrefs>>(carregarPrefs);
 
+  // Carrega a letra da música ativa
   useEffect(() => {
     if (musicaAtiva) {
       fetch(`/${musicaAtiva.categoria === 'lenta' ? 'lentas' : 'agitadas'}/${musicaAtiva.id}.txt`)
@@ -75,6 +104,34 @@ function App() {
         .catch(() => setLetra('Letra não encontrada.'));
     }
   }, [musicaAtiva]);
+
+  // Quando a música ativa muda, restaura as preferências salvas dela
+  useEffect(() => {
+    if (musicaAtiva) {
+      const salvo = prefs[musicaAtiva.id];
+      if (salvo) {
+        setFonteSize(salvo.fontSize);
+        setNumColunas(salvo.numColunas);
+      } else {
+        setFonteSize(2.2);
+        setNumColunas(2);
+      }
+    }
+  }, [musicaAtiva, prefs]);
+
+  // Sempre que fonte ou colunas mudam, salva para a música ativa
+  const atualizarPrefs = useCallback((novaFonte?: number, novasColunas?: number) => {
+    if (!musicaAtiva) return;
+    setPrefs(prev => {
+      const novo = { ...prev };
+      novo[musicaAtiva.id] = {
+        fontSize: novaFonte ?? fonteSize,
+        numColunas: novasColunas ?? numColunas,
+      };
+      salvarPrefs(novo);
+      return novo;
+    });
+  }, [musicaAtiva, fonteSize, numColunas]);
 
   const abrirMusica = useCallback((musica: Musica) => {
     setMusicaAtiva(musica);
@@ -101,17 +158,29 @@ function App() {
 
   const aumentarFonte = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setFonteSize(prev => Math.min(prev + 0.3, 4.0));
+    setFonteSize(prev => {
+      const nova = Math.min(prev + 0.3, 4.0);
+      setTimeout(() => atualizarPrefs(nova, undefined), 0);
+      return nova;
+    });
   };
 
   const diminuirFonte = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setFonteSize(prev => Math.max(prev - 0.3, 1.0));
+    setFonteSize(prev => {
+      const nova = Math.max(prev - 0.3, 1.0);
+      setTimeout(() => atualizarPrefs(nova, undefined), 0);
+      return nova;
+    });
   };
 
   const alternarColunas = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setNumColunas(prev => (prev === 3 ? 1 : prev + 1));
+    setNumColunas(prev => {
+      const nova = prev === 3 ? 1 : prev + 1;
+      setTimeout(() => atualizarPrefs(undefined, nova), 0);
+      return nova;
+    });
   };
 
   // Tela de exibição da letra
@@ -123,20 +192,22 @@ function App() {
 
     return (
       <div className="tela-cheia" onClick={voltarParaLista}>
-        <div className="letra-container">
-          <div className="botoes-fonte">
+        {/* Barra superior fixa: título + botões alinhados */}
+        <div className="barra-superior">
+          <div className="moldura-titulo-topo">
+            <div className="titulo-exibicao-topo">{titulo}</div>
+            {autor && <div className="autor-exibicao-topo">{autor}</div>}
+          </div>
+          <div className="botoes-fonte-topo">
             <button className="btn-fonte" onClick={aumentarFonte}>A+</button>
             <button className="btn-fonte" onClick={diminuirFonte}>A-</button>
             <button className="btn-fonte btn-colunas" onClick={alternarColunas}>
               {numColunas}col
             </button>
           </div>
+        </div>
 
-          <div className="moldura-titulo">
-            <div className="titulo-exibicao">{titulo}</div>
-            {autor && <div className="autor-exibicao">{autor}</div>}
-          </div>
-
+        <div className="letra-container">
           <pre
             className={`letra-texto coluna-${numColunas}`}
             style={{ fontSize: `${fonteSize}rem` }}
