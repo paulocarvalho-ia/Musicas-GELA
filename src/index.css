@@ -50,8 +50,9 @@ body {
 
 /* TELA INICIAL */
 .container-inicio {
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
+  padding-top: 60px;
 }
 
 .header-inicio {
