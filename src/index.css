@@ -13,6 +13,7 @@ body {
   overflow: hidden;
 }
 
+/* PÁGINA INICIAL E LISTAS */
 .pagina-inicial {
   height: 100vh;
   background: linear-gradient(135deg, #f5f0e8 0%, #e8e0d5 50%, #dfd5c5 100%);
@@ -47,14 +48,98 @@ body {
   overflow: hidden;
 }
 
+/* TELA INICIAL */
+.container-inicio {
+  justify-content: center;
+  align-items: center;
+}
+
+.header-inicio {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 900px;
+  margin-bottom: 40px;
+}
+
+.logo {
+  height: 100px;
+  width: auto;
+  object-fit: contain;
+}
+
+.titulo-central {
+  text-align: center;
+}
+
+.titulo-central h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #5a4a3a;
+  letter-spacing: 6px;
+}
+
+.titulo-central p {
+  font-size: 1rem;
+  color: #8a7a6a;
+  margin-top: 4px;
+}
+
+.botoes-inicio {
+  display: flex;
+  gap: 30px;
+}
+
+.btn-inicio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 220px;
+  height: 220px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: white;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+}
+
+.btn-inicio:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.25);
+}
+
+.btn-lentas {
+  background: linear-gradient(145deg, #8b9dc3, #6d7fa8);
+}
+
+.btn-agitadas {
+  background: linear-gradient(145deg, #e8a87c, #d4916a);
+}
+
+.btn-inicio-icone {
+  font-size: 3rem;
+  margin-bottom: 12px;
+}
+
+.btn-inicio-titulo {
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+/* CABEÇALHO DAS LISTAS */
 .header {
   text-align: center;
   padding: 12px 0 6px;
   flex-shrink: 0;
+  position: relative;
 }
 
 .header h1 {
-  font-size: 2rem;
+  font-size: 1.8rem;
   font-weight: 700;
   color: #5a4a3a;
   letter-spacing: 4px;
@@ -65,39 +150,46 @@ body {
   color: #8a7a6a;
 }
 
-.dois-lados {
-  display: flex;
-  gap: 12px;
-  flex: 1;
-  min-height: 0;
+.btn-voltar {
+  position: absolute;
+  left: 0;
+  top: 12px;
+  background: rgba(0,0,0,0.06);
+  border: 1px solid rgba(0,0,0,0.1);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  color: #5a4a3a;
+  transition: all 0.2s;
 }
 
-.lado {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  overflow: hidden;
+.btn-voltar:hover {
+  background: rgba(0,0,0,0.12);
 }
 
-.titulo-lado {
+.titulo-categoria {
   text-align: center;
-  font-size: 1.1rem;
+  font-size: 1.3rem;
   color: #6b5d4e;
-  padding: 6px 0;
+  padding: 8px 0;
   font-weight: 600;
   flex-shrink: 0;
 }
 
+/* GRADE DE BOTÕES */
 .grade-botoes {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
   gap: 6px;
   flex: 1;
   overflow-y: auto;
   align-content: start;
   padding: 4px;
   min-height: 0;
+}
+
+.grade-unica {
+  grid-template-columns: repeat(4, 1fr);
 }
 
 .btn-musica {
@@ -118,7 +210,7 @@ body {
 
 .btn-musica:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
 .btn-lenta {
@@ -149,6 +241,7 @@ body {
   margin-top: 2px;
 }
 
+/* HISTÓRICO */
 .historico {
   flex-shrink: 0;
   margin-top: 6px;
@@ -183,6 +276,7 @@ body {
   background: rgba(0,0,0,0.12);
 }
 
+/* TELA CHEIA */
 .tela-cheia {
   position: fixed;
   top: 0;
@@ -225,6 +319,32 @@ body {
   overflow: hidden;
 }
 
+/* MOLDURA DO TÍTULO */
+.moldura-titulo {
+  text-align: center;
+  margin-bottom: 24px;
+  padding: 16px 32px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.titulo-exibicao {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 2px;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+.autor-exibicao {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.75);
+  margin-top: 6px;
+  font-style: italic;
+}
+
+/* TEXTO DA LETRA */
 .letra-texto {
   color: #ffffff;
   text-align: left;
@@ -237,7 +357,12 @@ body {
   padding: 10px 20px;
   columns: 2;
   column-gap: 40px;
+  column-rule: 1px solid rgba(255, 255, 255, 0.2);
   width: 100%;
+}
+
+.letra-texto.coluna-unica {
+  columns: 1;
 }
 
 .botoes-fonte {
@@ -277,6 +402,7 @@ body {
   z-index: 1;
 }
 
+/* SCROLLBAR */
 .grade-botoes::-webkit-scrollbar {
   width: 6px;
 }
