@@ -56,34 +56,36 @@ body {
 
 .header-inicio {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   width: 100%;
   max-width: 900px;
   margin-bottom: 40px;
+  padding-top: 20px;
 }
 
 .logo {
-  height: 100px;
+  height: 110px;
   width: auto;
   object-fit: contain;
 }
 
 .titulo-central {
   text-align: center;
+  margin-top: 10px;
 }
 
 .titulo-central h1 {
-  font-size: 2.5rem;
+  font-size: 2.8rem;
   font-weight: 700;
   color: #5a4a3a;
   letter-spacing: 6px;
 }
 
 .titulo-central p {
-  font-size: 1rem;
+  font-size: 1.1rem;
   color: #8a7a6a;
-  margin-top: 4px;
+  margin-top: 6px;
 }
 
 .botoes-inicio {
