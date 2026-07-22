@@ -61,6 +61,7 @@ function App() {
   const [musicaAtiva, setMusicaAtiva] = useState<Musica | null>(null);
   const [letra, setLetra] = useState<string>('');
   const [fonteSize, setFonteSize] = useState(2.2);
+  const [numColunas, setNumColunas] = useState(2);
   const [historico, setHistorico] = useState<Musica[]>([]);
 
   useEffect(() => {
@@ -108,13 +109,17 @@ function App() {
     setFonteSize(prev => Math.max(prev - 0.3, 1.0));
   };
 
+  const alternarColunas = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setNumColunas(prev => (prev === 3 ? 1 : prev + 1));
+  };
+
   // Tela de exibição da letra
   if (tela === 'musica' && musicaAtiva) {
     const linhas = letra.split('\n');
     const titulo = linhas[0] || '';
     const autor = linhas[1] || '';
     const corpo = linhas.slice(2).join('\n').trim();
-    const textoCurto = corpo.length < 400;
 
     return (
       <div className="tela-cheia" onClick={voltarParaLista}>
@@ -122,6 +127,9 @@ function App() {
           <div className="botoes-fonte">
             <button className="btn-fonte" onClick={aumentarFonte}>A+</button>
             <button className="btn-fonte" onClick={diminuirFonte}>A-</button>
+            <button className="btn-fonte btn-colunas" onClick={alternarColunas}>
+              {numColunas}col
+            </button>
           </div>
 
           <div className="moldura-titulo">
@@ -130,7 +138,7 @@ function App() {
           </div>
 
           <pre
-            className={`letra-texto ${textoCurto ? 'coluna-unica' : ''}`}
+            className={`letra-texto coluna-${numColunas}`}
             style={{ fontSize: `${fonteSize}rem` }}
           >
             {corpo}
