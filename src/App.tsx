@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Musica } from './types';
 
-// Chave para salvar preferências no navegador
 const PREFS_KEY = 'gela-musica-prefs';
 
 interface MusicaPrefs {
@@ -9,7 +8,6 @@ interface MusicaPrefs {
   numColunas: number;
 }
 
-// Carrega preferências salvas
 function carregarPrefs(): Record<string, MusicaPrefs> {
   try {
     const raw = localStorage.getItem(PREFS_KEY);
@@ -19,12 +17,11 @@ function carregarPrefs(): Record<string, MusicaPrefs> {
   }
 }
 
-// Salva preferências
 function salvarPrefs(prefs: Record<string, MusicaPrefs>) {
   try {
     localStorage.setItem(PREFS_KEY, JSON.stringify(prefs));
   } catch {
-    // ignora erro de localStorage cheio
+    // ignora
   }
 }
 
@@ -92,7 +89,6 @@ function App() {
   const [historico, setHistorico] = useState<Musica[]>([]);
   const [prefs, setPrefs] = useState<Record<string, MusicaPrefs>>(carregarPrefs);
 
-  // Carrega a letra da música ativa
   useEffect(() => {
     if (musicaAtiva) {
       fetch(`/${musicaAtiva.categoria === 'lenta' ? 'lentas' : 'agitadas'}/${musicaAtiva.id}.txt`)
@@ -105,7 +101,6 @@ function App() {
     }
   }, [musicaAtiva]);
 
-  // Quando a música ativa muda, restaura as preferências salvas dela
   useEffect(() => {
     if (musicaAtiva) {
       const salvo = prefs[musicaAtiva.id];
@@ -114,12 +109,11 @@ function App() {
         setNumColunas(salvo.numColunas);
       } else {
         setFonteSize(2.2);
-        setNumColunas(2);
+        setNumColunas(window.innerWidth < 768 ? 1 : 2);
       }
     }
   }, [musicaAtiva, prefs]);
 
-  // Sempre que fonte ou colunas mudam, salva para a música ativa
   const atualizarPrefs = useCallback((novaFonte?: number, novasColunas?: number) => {
     if (!musicaAtiva) return;
     setPrefs(prev => {
@@ -183,7 +177,6 @@ function App() {
     });
   };
 
-  // Tela de exibição da letra
   if (tela === 'musica' && musicaAtiva) {
     const linhas = letra.split('\n');
     const titulo = linhas[0] || '';
@@ -192,7 +185,6 @@ function App() {
 
     return (
       <div className="tela-cheia" onClick={voltarParaLista}>
-        {/* Barra superior fixa: título + botões alinhados */}
         <div className="barra-superior">
           <div className="moldura-titulo-topo">
             <div className="titulo-exibicao-topo">{titulo}</div>
@@ -220,7 +212,6 @@ function App() {
     );
   }
 
-  // Tela inicial com dois botões grandes
   if (tela === 'inicio') {
     return (
       <div className="pagina-inicial">
@@ -249,7 +240,6 @@ function App() {
     );
   }
 
-  // Tela de lista de músicas (lentas ou agitadas)
   const categoriaAtual = tela === 'lentas' ? 'lenta' : 'agitada';
   const musicasFiltradas = musicas.filter(m => m.categoria === categoriaAtual);
 
