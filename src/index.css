@@ -174,13 +174,34 @@ body {
   background: rgba(0,0,0,0.12);
 }
 
+/* TOPO DA LISTA COM BOTÃO REPERTÓRIO */
+.topo-lista {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px;
+  flex-shrink: 0;
+}
+
 .titulo-categoria {
-  text-align: center;
   font-size: 1.1rem;
   color: #6b5d4e;
-  padding: 4px 0;
   font-weight: 600;
-  flex-shrink: 0;
+}
+
+.btn-repertorio-acesso {
+  background: rgba(0,0,0,0.06);
+  border: 1px solid rgba(0,0,0,0.15);
+  padding: 5px 12px;
+  border-radius: 16px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  color: #5a4a3a;
+  transition: all 0.2s;
+}
+
+.btn-repertorio-acesso:hover {
+  background: rgba(0,0,0,0.12);
 }
 
 /* GRADE DE BOTÕES */
@@ -198,7 +219,13 @@ body {
   grid-template-columns: repeat(4, 1fr);
 }
 
+.btn-musica-wrapper {
+  position: relative;
+  display: flex;
+}
+
 .btn-musica {
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -241,6 +268,32 @@ body {
   margin-top: 1px;
 }
 
+/* BOTÃO DE ADICIONAR AO REPERTÓRIO */
+.btn-adicionar-repertorio {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background: rgba(255,255,255,0.3);
+  border: none;
+  color: white;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  z-index: 2;
+}
+
+.btn-adicionar-repertorio:hover {
+  background: rgba(255,255,255,0.6);
+  color: #333;
+}
+
 /* HISTÓRICO */
 .historico {
   flex-shrink: 0;
@@ -272,7 +325,120 @@ body {
   transition: all 0.2s;
 }
 
-/* TELA CHEIA */
+/* TELA DE REPERTÓRIO (gerenciamento com reordenação) */
+.repertorio-lista {
+  flex: 1;
+  overflow-y: auto;
+  padding: 4px 0;
+}
+
+.repertorio-vazio {
+  text-align: center;
+  color: #8a7a6a;
+  margin-top: 30px;
+  font-size: 0.9rem;
+}
+
+.repertorio-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  background: rgba(255,255,255,0.4);
+  border-radius: 6px;
+  margin-bottom: 4px;
+}
+
+.repertorio-numero {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #8b9dc3;
+  min-width: 24px;
+  text-align: center;
+}
+
+.repertorio-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.repertorio-info strong {
+  display: block;
+  font-size: 0.85rem;
+  color: #4a3a2a;
+}
+
+.repertorio-info small {
+  font-size: 0.65rem;
+  color: #8a7a6a;
+}
+
+.repertorio-acoes {
+  display: flex;
+  gap: 4px;
+}
+
+.btn-repertorio-setas {
+  background: none;
+  border: none;
+  color: #5a4a3a;
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.btn-repertorio-setas:hover:not(:disabled) {
+  background: rgba(0,0,0,0.08);
+}
+
+.btn-repertorio-setas:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.btn-repertorio-remover {
+  background: none;
+  border: none;
+  color: #c44;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 4px 6px;
+  border-radius: 50%;
+  transition: background 0.2s;
+}
+
+.btn-repertorio-remover:hover {
+  background: rgba(255,0,0,0.1);
+}
+
+.repertorio-rodape {
+  flex-shrink: 0;
+  padding: 8px 0;
+  text-align: center;
+}
+
+.btn-iniciar-repertorio {
+  background: #6d7fa8;
+  border: none;
+  color: white;
+  padding: 10px 30px;
+  border-radius: 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.btn-iniciar-repertorio:hover {
+  background: #5a6a94;
+  transform: translateY(-2px);
+}
+
+/* TELA CHEIA (letra) */
 .tela-cheia {
   position: fixed;
   top: 0;
@@ -424,11 +590,15 @@ body {
 }
 
 /* SCROLLBAR */
-.grade-botoes::-webkit-scrollbar {
+.grade-botoes::-webkit-scrollbar,
+.repertorio-lista::-webkit-scrollbar,
+.letra-texto::-webkit-scrollbar {
   width: 5px;
 }
 
-.grade-botoes::-webkit-scrollbar-thumb {
+.grade-botoes::-webkit-scrollbar-thumb,
+.repertorio-lista::-webkit-scrollbar-thumb,
+.letra-texto::-webkit-scrollbar-thumb {
   background: rgba(0, 0, 0, 0.15);
   border-radius: 4px;
 }
@@ -513,7 +683,6 @@ body {
     font-size: 0.5rem;
   }
 
-  /* Força coluna única em mobile, a menos que o usuário mude */
   .coluna-2, .coluna-3 {
     columns: 1 !important;
     column-gap: normal;
