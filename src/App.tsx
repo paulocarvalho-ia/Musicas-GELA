@@ -2,17 +2,10 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { Musica } from './types';
 
-// -------------------------------------------------------------
-// Configuração do Supabase
-// -------------------------------------------------------------
 const SUPABASE_URL = 'https://csennhlcdpqonlqfjfsu.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_bHkciGpsPw8hNFv2Q7Ujsg_cCNO_14x';
-
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// -------------------------------------------------------------
-// Lista fixa de músicas (as 47 atuais)
-// -------------------------------------------------------------
 const musicasFixas: Musica[] = [
   // LENTAS
   { id: 'alem-do-veu', titulo: 'Além do Véu', autor: 'Carol Badon e Rafael Concellos', lado: 'esquerdo', categoria: 'lenta', origem: 'fixa' },
@@ -66,19 +59,13 @@ const musicasFixas: Musica[] = [
   { id: 'voo-vento-e-luz', titulo: 'Vôo / Vento e Luz', autor: 'Joelson Queiroz / Maurício Soares e Oscar Weiss', lado: 'direito', categoria: 'agitada', origem: 'fixa' },
 ];
 
-// -------------------------------------------------------------
-// Persistência de preferências e repertório
-// -------------------------------------------------------------
 const PREFS_KEY = 'gela-musica-prefs';
 const REPERTORIO_KEY = 'gela-repertorio';
 
 interface MusicaPrefs { fontSize: number; numColunas: number; }
 
 function carregarPrefs(): Record<string, MusicaPrefs> {
-  try {
-    const raw = localStorage.getItem(PREFS_KEY);
-    return raw ? JSON.parse(raw) : {};
-  } catch { return {}; }
+  try { const raw = localStorage.getItem(PREFS_KEY); return raw ? JSON.parse(raw) : {}; } catch { return {}; }
 }
 
 function salvarPrefs(prefs: Record<string, MusicaPrefs>) {
@@ -86,10 +73,7 @@ function salvarPrefs(prefs: Record<string, MusicaPrefs>) {
 }
 
 function carregarRepertorio(): Musica[] {
-  try {
-    const raw = localStorage.getItem(REPERTORIO_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch { return []; }
+  try { const raw = localStorage.getItem(REPERTORIO_KEY); return raw ? JSON.parse(raw) : []; } catch { return []; }
 }
 
 function salvarRepertorio(repertorio: Musica[]) {
@@ -105,9 +89,6 @@ function calcularAjusteIdeal(texto: string): MusicaPrefs {
   return { fontSize: 1.8, numColunas: 3 };
 }
 
-// -------------------------------------------------------------
-// Componente principal
-// -------------------------------------------------------------
 type Tela = 'inicio' | 'lentas' | 'agitadas' | 'musica' | 'repertorio' | 'upload' | 'editar';
 
 function App() {
@@ -125,29 +106,20 @@ function App() {
   const [carregandoNuvem, setCarregandoNuvem] = useState(true);
   const [senha, setSenha] = useState('');
   const [editandoMusica, setEditandoMusica] = useState<Musica | null>(null);
-
-  // Formulário de upload/edição
   const [formTitulo, setFormTitulo] = useState('');
   const [formAutor, setFormAutor] = useState('');
   const [formCategoria, setFormCategoria] = useState<'lenta' | 'agitada'>('lenta');
   const [formConteudo, setFormConteudo] = useState('');
   const [formId, setFormId] = useState<string | null>(null);
 
-  const todasMusicas = useMemo(() => {
-    return [...musicasFixas, ...musicasNuvem];
-  }, [musicasNuvem]);
+  const todasMusicas = useMemo(() => [...musicasFixas, ...musicasNuvem], [musicasNuvem]);
 
-  useEffect(() => {
-    salvarRepertorio(repertorio);
-  }, [repertorio]);
+  useEffect(() => { salvarRepertorio(repertorio); }, [repertorio]);
 
   useEffect(() => {
     async function carregarNuvem() {
       try {
-        const { data, error } = await supabase
-          .from('musicas')
-          .select('*')
-          .order('titulo');
+        const { data, error } = await supabase.from('musicas').select('*').order('titulo');
         if (error) throw error;
         const musicas = (data || []).map((m: any) => ({
           id: m.id,
@@ -212,10 +184,7 @@ function App() {
     if (!musicaAtiva) return;
     setPrefs(prev => {
       const novo = { ...prev };
-      novo[musicaAtiva.id] = {
-        fontSize: novaFonte ?? fonteSize,
-        numColunas: novasColunas ?? numColunas,
-      };
+      novo[musicaAtiva.id] = { fontSize: novaFonte ?? fonteSize, numColunas: novasColunas ?? numColunas };
       salvarPrefs(novo);
       return novo;
     });
@@ -261,7 +230,6 @@ function App() {
     setIndiceRepertorio(0);
   };
 
-  // Repertório
   const adicionarAoRepertorio = (musica: Musica) => {
     setRepertorio(prev => {
       if (prev.some(m => m.id === musica.id)) return prev;
@@ -289,7 +257,6 @@ function App() {
     abrirMusica(repertorio[0], true);
   };
 
-  // Upload/edição
   const abrirUpload = () => {
     setFormId(null);
     setFormTitulo('');
@@ -319,12 +286,7 @@ function App() {
       alert('Preencha título e conteúdo.');
       return;
     }
-    const nova = {
-      titulo: formTitulo,
-      autor: formAutor,
-      categoria: formCategoria,
-      conteudo: formConteudo,
-    };
+    const nova = { titulo: formTitulo, autor: formAutor, categoria: formCategoria, conteudo: formConteudo };
     try {
       const { data, error } = await supabase.from('musicas').insert(nova).select();
       if (error) throw error;
@@ -389,15 +351,13 @@ function App() {
       const linhas = texto.split('\n');
       const titulo = linhas[0]?.replace(/^#+\s*/, '').trim() || '';
       const autor = linhas[1]?.replace(/^Autor:\s*/i, '').trim() || '';
-      const conteudo = linhas.join('\n');
       setFormTitulo(titulo);
       setFormAutor(autor);
-      setFormConteudo(conteudo);
+      setFormConteudo(linhas.join('\n'));
     };
     reader.readAsText(file);
   };
 
-  // Renderização
   if (tela === 'upload' || tela === 'editar') {
     return (
       <div className="pagina-inicial">
@@ -406,7 +366,6 @@ function App() {
             <button className="btn-voltar" onClick={irParaInicio}>← Início</button>
             <h1>{tela === 'upload' ? 'Nova Música' : 'Editar Música'}</h1>
           </header>
-
           <div className="form-musica">
             <label>
               Título
@@ -544,7 +503,6 @@ function App() {
     );
   }
 
-  // Listas
   const categoriaAtual = tela === 'lentas' ? 'lenta' : 'agitada';
   const musicasFiltradas = todasMusicas.filter(m => m.categoria === categoriaAtual);
 
