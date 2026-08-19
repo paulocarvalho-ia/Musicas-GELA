@@ -504,7 +504,9 @@ function App() {
   }
 
   const categoriaAtual = tela === 'lentas' ? 'lenta' : 'agitada';
-  const musicasFiltradas = todasMusicas.filter(m => m.categoria === categoriaAtual);
+  const musicasFiltradas = todasMusicas
+    .filter(m => m.categoria === categoriaAtual)
+    .sort((a, b) => a.titulo.localeCompare(b.titulo, 'pt-BR', { sensitivity: 'base' }));
 
   return (
     <div className="pagina-inicial">
