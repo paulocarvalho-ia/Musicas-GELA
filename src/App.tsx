@@ -336,6 +336,9 @@ function App() {
       if (error) throw error;
       setMusicasNuvem(prev => prev.filter(m => m.id !== id));
       setRepertorio(prev => prev.filter(m => m.id !== id));
+      setMusicaAtiva(null);
+      setLetra('');
+      setTela('inicio');
     } catch (err) {
       console.error(err);
       alert('Erro ao excluir.');
@@ -392,6 +395,9 @@ function App() {
             </label>
             <div className="botoes-form">
               <button onClick={tela === 'upload' ? salvarNovaMusica : salvarEdicao}>Salvar</button>
+              {tela === 'editar' && (
+                <button className="excluir" onClick={() => formId && excluirMusica(formId)}>Excluir</button>
+              )}
               <button className="cancelar" onClick={irParaInicio}>Cancelar</button>
             </div>
           </div>
@@ -534,7 +540,10 @@ function App() {
               </button>
               <button className="btn-adicionar-repertorio" onClick={() => adicionarAoRepertorio(musica)} title="Adicionar ao repertório">+</button>
               {musica.origem === 'nuvem' && (
-                <button className="btn-editar-musica" onClick={() => abrirEdicao(musica)} title="Editar">✏️</button>
+                <>
+                  <button className="btn-editar-musica" onClick={() => abrirEdicao(musica)} title="Editar">✏️</button>
+                  <button className="btn-excluir-musica" onClick={() => excluirMusica(musica.id)} title="Excluir">🗑️</button>
+                </>
               )}
             </div>
           ))}
