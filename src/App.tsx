@@ -353,7 +353,7 @@ function App() {
       const autor = linhas[1]?.replace(/^Autor:\s*/i, '').trim() || '';
       setFormTitulo(titulo);
       setFormAutor(autor);
-      setFormConteudo(linhas.join('\n'));
+      setFormConteudo(linhas.slice(2).join('\n').trim());
     };
     reader.readAsText(file);
   };
@@ -401,10 +401,15 @@ function App() {
   }
 
   if (tela === 'musica' && musicaAtiva) {
-    const linhas = letra.split('\n');
-    const titulo = linhas[0] || '';
-    const autor = linhas[1] || '';
-    const corpo = linhas.slice(2).join('\n').trim();
+    let titulo = musicaAtiva.titulo;
+    let autor = musicaAtiva.autor;
+    let corpo = letra;
+    if (musicaAtiva.origem !== 'nuvem') {
+      const linhas = letra.split('\n');
+      titulo = linhas[0] || '';
+      autor = linhas[1] || '';
+      corpo = linhas.slice(2).join('\n').trim();
+    }
     const aumentarFonte = (e: React.MouseEvent) => { e.stopPropagation(); setFonteSize(prev => { const nova = Math.min(prev + 0.3, 4.0); setTimeout(() => atualizarPrefs(nova, undefined), 0); return nova; }); };
     const diminuirFonte = (e: React.MouseEvent) => { e.stopPropagation(); setFonteSize(prev => { const nova = Math.max(prev - 0.3, 1.0); setTimeout(() => atualizarPrefs(nova, undefined), 0); return nova; }); };
     const alternarColunas = (e: React.MouseEvent) => { e.stopPropagation(); setNumColunas(prev => { const nova = prev === 3 ? 1 : prev + 1; setTimeout(() => atualizarPrefs(undefined, nova), 0); return nova; }); };
