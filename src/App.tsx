@@ -121,16 +121,16 @@ function App() {
       try {
         const { data, error } = await supabase.from('musicas').select('*').order('titulo');
         if (error) throw error;
-        const musicas = (data || []).map((m: any) => ({
-          id: m.id,
-          titulo: m.titulo,
-          autor: m.autor || '',
-          lado: m.categoria === 'lenta' ? 'esquerdo' : 'direito',
-          categoria: m.categoria,
-          conteudo: m.conteudo,
+        const musicas: Musica[] = (data || []).map((m: any) => ({
+          id: m.id as string,
+          titulo: m.titulo as string,
+          autor: (m.autor || '') as string,
+          lado: (m.categoria === 'lenta' ? 'esquerdo' : 'direito') as 'esquerdo' | 'direito',
+          categoria: m.categoria as 'lenta' | 'agitada',
+          conteudo: m.conteudo as string,
           origem: 'nuvem' as const,
-          created_at: m.created_at,
-          updated_at: m.updated_at,
+          created_at: m.created_at as string,
+          updated_at: m.updated_at as string,
         }));
         setMusicasNuvem(musicas);
       } catch (err) {
@@ -292,13 +292,13 @@ function App() {
       if (error) throw error;
       if (data) {
         const musicaNova: Musica = {
-          id: data[0].id,
-          titulo: data[0].titulo,
-          autor: data[0].autor,
-          lado: data[0].categoria === 'lenta' ? 'esquerdo' : 'direito',
-          categoria: data[0].categoria,
-          conteudo: data[0].conteudo,
-          origem: 'nuvem',
+          id: data[0].id as string,
+          titulo: data[0].titulo as string,
+          autor: data[0].autor as string,
+          lado: (data[0].categoria === 'lenta' ? 'esquerdo' : 'direito') as 'esquerdo' | 'direito',
+          categoria: data[0].categoria as 'lenta' | 'agitada',
+          conteudo: data[0].conteudo as string,
+          origem: 'nuvem' as const,
         };
         setMusicasNuvem(prev => [...prev, musicaNova]);
       }
